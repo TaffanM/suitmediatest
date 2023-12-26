@@ -122,47 +122,94 @@ struct PageOne : View {
             }
         }
         
-        
-//        .background(
-//            LinearGradient(
-//                gradient: Gradient(colors: [Color(hex: "#3B8FA7"), Color(hex: "#8EBCA9")]),
-//                startPoint: .topLeading,
-//                endPoint: .bottomLeading
-//            )
-//        )
-        
     }
     
 }
 
 struct PageTwo : View {
     @Binding var name : String
+    @State var shouldNavigatePageThree = false
     var body: some View {
         NavigationStack {
             ZStack(alignment: .topLeading){
-                VStack(alignment: .leading){
-                    Text("Welcome")
-                        .font(.title3)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Welcome")
+                            .font(.title3)
+                            
+                        Text(name)
+                            .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                            .bold()
                         
-                    Text(name)
-                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                        .bold()
                     
+                    }
+                    .padding()
                     Spacer()
                 }
-                Spacer()
+            
+            }
+            
+            Spacer()
+            VStack(alignment: .center) {
+                Text("Selected User name")
+                    .font(.largeTitle)
+                    .bold()
+            }
+            Spacer()
+            
+            
+            
+            VStack {
+                Button(action: {
+                    shouldNavigatePageThree.toggle()
+                }, label: {
+                    Text("Choose a User")
+                        .foregroundColor(.white)
+                        .padding(.vertical)
+                        .frame(width: UIScreen.main.bounds.width - 50)
+                })
+                .background(Color(hex: "#2B637B"))
+                .cornerRadius(15)
+                .padding(.top, 50)
                 
             }
             .navigationTitle("Second Screen")
             .navigationBarBackButtonHidden(false)
+            .navigationDestination(isPresented: $shouldNavigatePageThree) {
+                PageThree(name: $name)
+            }
             
         }
-        Divider()
-        Spacer()
-        
-        
     }
 }
+
+struct PageThree : View {
+    @Binding var name: String
+    @State private var shouldNavigatePageTwo = false
+    var body: some View {
+        NavigationStack {
+            
+        }
+        .navigationTitle("Third Screen")
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    shouldNavigatePageTwo.toggle()
+                }, label: {
+                    HStack {
+                        Image(systemName: "chevron.backward")
+                        Text("Back")
+                    }
+                })
+            }
+        }
+        .navigationDestination(isPresented: $shouldNavigatePageTwo) {
+            PageTwo(name: $name)
+        }
+    }
+}
+
 
 
 
